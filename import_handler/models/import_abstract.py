@@ -34,7 +34,7 @@ class ImportAbstract(models.AbstractModel):
     date_format = "%Y/%m/%d %H:%M:%S"
 
     @api.model
-    def execute_import_chunk(self, offset, limit, company_id, job=False):
+    def execute_import_chunk(self, offset, limit, company_id):
         """
         Abstract method.
         This method should by overwritten by each import
@@ -85,11 +85,10 @@ class ImportAbstract(models.AbstractModel):
 
                 # Copy the value of the file in the table
                 env.cr.copy_expert(copy_query, file=file)
-                env.cr.commit()
+                env.cr.commit()  # pylint: disable=E8102
 
     def get_import_length(self):
         with registry(self._cr.dbname).cursor() as cr:
-
             query = "SELECT COUNT(*) FROM %s;" % (self._table)
             cr.execute(query)
             size = cr.dictfetchone().get("count", 0)

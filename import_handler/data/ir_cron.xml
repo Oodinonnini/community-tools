@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+
+    <record id="cron_kill_zombie_jobs" model="ir.cron">
+        <field name="name">Kill Zombie Jobs </field>
+        <field name="active" eval="True" />
+        <field name="user_id" ref="base.user_root" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="priority">1</field>
+        <field name="doall" eval="False" />
+        <field name="model_id" ref="queue_job.model_queue_job" />
+        <field name="code">
+model._cron_clear_zombie_jobs()
+        </field>
+        <field name="state">code</field>
+        <field name="nextcall" eval="(DateTime.now()).strftime('%Y-%m-%d 23:59:59')" />
+    </record>
+
+</odoo>

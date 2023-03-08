@@ -106,11 +106,10 @@ class SQLHelper(models.AbstractModel):
         TRUNCATE %(table)s;
         ALTER SEQUENCE %(table_sequence)s RESTART WITH 1;
         """
-        with odoo.api.Environment.manage():
-            with registry(self.env.cr.dbname).cursor() as new_cr:
-                new_env = api.Environment(new_cr, self.env.uid, self.env.context)
-                new_env.cr.execute(
-                    query,
-                    {"table": AsIs(table), "table_sequence": AsIs(table + "_id_seq")},
-                )
-                new_env.cr.commit()
+        with registry(self.env.cr.dbname).cursor() as new_cr:
+            new_env = api.Environment(new_cr, self.env.uid, self.env.context)
+            new_env.cr.execute(
+                query,
+                {"table": AsIs(table), "table_sequence": AsIs(table + "_id_seq")},
+            )
+            new_env.cr.commit()  # pylint: disable=E8102
