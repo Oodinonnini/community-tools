@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_import_job_log,access_import_job_log,model_import_job_log,,1,0,0,0
+access_import_job_log_system,access_import_job_log_system,model_import_job_log,base.group_system,1,1,1,1
+access_import_job,access_import_job,model_import_job,,1,0,0,0
+access_import_job_system,access_import_job_system,model_import_job,base.group_system,1,1,1,1
+access_import_model,access_import_model,model_import_model,,1,0,0,0
+access_import_model_system,access_import_model_system,model_import_model,base.group_system,1,1,1,1
+access_execute_import, access_execute_import,model_execute_import,base.group_system,1,1,1,1

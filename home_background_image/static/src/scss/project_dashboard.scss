@@ -1,0 +1,10 @@
+.o_home_menu {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.o_home_menu_background:not(.o_home_menu_background_custom) .o_main_navbar {
+    border-bottom: 1px solid #68465f;
+    background-color: #875A7B;
+}

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="import_model_tree" model="ir.ui.view">
+        <field name="name">Import Model</field>
+        <field name="model">import.model</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="model_id"/>
+                <field name="file_pattern"/>
+                <field name="company_id"/>
+                <field name="sequence"/>
+                <field name="last_import_time"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_job_action" model="ir.actions.act_window">
+        <field name="name">Jobs</field>
+        <field name="res_model">import.job</field>
+        <field name="view_mode">tree,form</field>
+        <field name="target">current</field>
+        <field name="view_id" ref="import_job_log_tree"/>
+        <field name="search_view_id" ref="import_job_search"/>
+        <field name="domain">[('import_model_id', '=', active_id)]</field>
+    </record>
+
+    <record id="import_models_form" model="ir.ui.view">
+        <field name="name">Import Model</field>
+        <field name="model">import.model</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="button_delete_logs" string="Delete Logs" class="oe_stat_button" type="object" icon="fa-trash-o"/>
+                        <button name="button_execute_import" string="Execute Import" class="oe_stat_button" type="object" icon="fa-play"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="model_id"/>
+                            <field name="sequence"/>
+                            <field name="last_import_time"/>
+                            <field name="active" invisible="True"/>
+                        </group>
+                        <group>
+                            <field name="file_pattern"/>
+                            <field name="source_folder_path"/>
+                            <field name="destination_folder_path"/>
+                            <field name="is_handle_improper_csv"/>
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                    <separator string="Jobs" for="job_ids"/>
+                    <field name="job_ids"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="import_model_search" model="ir.ui.view">
+        <field name="name">Import Model Search View</field>
+        <field name="model">import.model</field>
+        <field name="arch" type="xml">
+            <search string="Import Files">
+                <field name="model_id" filter_domain="[('model_id','ilike',self)]" string="Model" />
+                <field name="pattern" filter_domain="[('pattern','ilike',self)]" string="Pattern" />
+
+                <group expand="1" string="Group By...">
+                    <filter name="group_by_company" string="Company" icon="fa-file-text-o" context="{'group_by':'company_id'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+    <record id="action_import_model" model="ir.actions.act_window">
+        <field name="name">Import Model</field>
+        <field name="res_model">import.model</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_import_model" name="Import Models" sequence="5" parent="main_import_menu" action="action_import_model"/>
+</odoo>

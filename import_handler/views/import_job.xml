@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="import_job_log_tree" model="ir.ui.view">
+        <field name="name">Import Job Log Tree</field>
+        <field name="model">import.job.log</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="level=='info'" decoration-danger="level=='error'" decoration-warning="level=='warning'">
+                <field name="time" />
+                <field name="level" />
+                <field name="name"/>
+                <field name="category"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="import_job_log_form" model="ir.ui.view">
+        <field name="name">Import Job Log Form</field>
+        <field name="model">import.job.log</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="time"/>
+                        <field name="level"/>
+                        <field name="name"/>
+                        <field name="detail"/>
+                        <field name="category"/>
+                        <field name="line"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="import_job_search" model="ir.ui.view">
+        <field name="name">Import Job Search</field>
+        <field name="model">import.job.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="level"/>
+                <filter name="group_by_level" string="Level" context="{'group_by': 'level'}"/>
+                <filter name="group_by_category" string="Category" context="{'group_by': 'category'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_log_job_action" model="ir.actions.act_window">
+        <field name="name">Logs</field>
+        <field name="res_model">import.job.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="target">current</field>
+        <field name="view_id" ref="import_job_log_tree"/>
+        <field name="search_view_id" ref="import_job_search"/>
+    </record>
+
+    <record id="import_logger_tree" model="ir.ui.view">
+        <field name="name">Import Job Tree</field>
+        <field name="model">import.job</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state=='success'" decoration-danger="state=='error'" decoration-muted="state=='skip'" decoration-primary="state=='progress'" decoration-warning="state=='warning'">
+                <field name="name"/>
+                <field name="import_model_id" invisible="1"/>
+                <field name="file_path"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="state"/>
+                <field name="progress" widget="progressbar" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="import_logger_search" model="ir.ui.view">
+        <field name="name">Import Job Search</field>
+        <field name="model">import.job</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="import_model_id"/>
+                <field name="state"/>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="import_logger_form" model="ir.ui.view">
+        <field name="name">Import Job Form</field>
+        <field name="model">import.job</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <!--<button name="execute_import" string="Reexecute Job" confirm="Are you sure?" type="object" icon="fa-repeat"/>-->
+                    <button name="button_stop" string="Stop" attrs="{'invisible': [('state', '=', 'stopped')]}" confirm="Are you sure?" type="object" icon="fa-stop-circle"/>
+                    <button name="remove_all_logs" string="Delete Logs" type="object" icon="fa-trash-o"/>
+                    <field name="state" widget="statusbar" statusbar_visible="success,waiting,progress"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="number_of_line"/>
+                        </group>
+                        <group>
+                            <label for="number_of_chunks_executed"/>
+                            <div class="o_row">
+                                <span><field name="number_of_chunks_executed"/></span>
+                                <span> / </span>
+                                <span><field name="number_of_chunks" nolabel="1"/></span>
+                            </div>
+                            <label for="number_of_queue_jobs_executed"/>
+                            <div class="o_row">
+                                <span><field name="number_of_queue_jobs_executed"/></span>
+                                <span> / </span>
+                                <span><field name="number_of_queue_jobs" nolabel="1"/></span>
+                                <span> (<field name="number_of_queue_jobs_failed" nolabel="1"/> failed)</span>
+                            </div>
+                        </group>
+                    </group>
+                    <field name="line_ids" >
+                        <tree decoration-success="level=='info'" decoration-danger="level=='error'" decoration-warning="level=='warning'">
+                            <field name="time" />
+                            <field name="level" />
+                            <field name="name"/>
+                            <field name="category"/>
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="app_import_menu" name="Imports" sequence="300" groups="base.group_system" web_icon="import_handler,static/description/icon.png"/>
+    <menuitem id="main_import_menu" parent="app_import_menu" name="Imports" sequence="5" groups="base.group_system"/>
+
+    <!-- LOGGER -->
+    <record id="action_import_logger" model="ir.actions.act_window">
+        <field name="name">Import Job</field>
+        <field name="res_model">import.job</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_import_logger" name="Import Logger" sequence="20" parent="main_import_menu" action="action_import_logger"/>
+</odoo>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="base.ir_logging_form_view" model="ir.ui.view">
+        <field name="name">ir.logging.form</field>
+        <field name="model">ir.logging</field>
+        <field name="arch" type="xml">
+            <form string="Log">
+                <sheet edit="false" delete="false" create="false">
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" attrs="{'invisible': ['|',('model','=',False),('res_id','=',0)]}"
+                                icon="fa-eye" name="view_record" string="View Record" type="object"/>
+                    </div>
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                    <group>
+                        <field name="create_date"/>
+                        <field name="message"/>
+                        <field name="level"/>
+                        <field name="user_id"/>
+                        <field name="model"/>
+                        <field name="res_id" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="base.ir_logging_tree_view" model="ir.ui.view">
+        <field name="name">ir.logging.tree</field>
+        <field name="model">ir.logging</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false" delete="false" decoration-info="level=='info'" decoration-muted="level=='debug'"
+                  decoration-warning="level=='warn'" decoration-danger="level=='error' or level=='fatal'">
+                <field name="name"/>
+                <field name="message"/>
+                <field name="level"/>
+                <field name="create_date"/>
+                <field name="user_id"/>
+                <field name="model"/>
+                <field name="res_id" invisible="1" />
+                <button attrs="{'invisible': ['|',('model','=',False), ('res_id','=',0)]}"
+                        icon="fa-eye" name="view_record" string="View Record" type="object"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="base.ir_logging_search_view" model="ir.ui.view">
+        <field name="name">ir.logging.search</field>
+        <field name="model">ir.logging</field>
+        <field name="arch" type="xml">
+            <search string="Logs">
+                <filter name="error" help="Error" domain="[('level', '=', 'error')]"/>
+                <filter name="warning" help="Warn" domain="[('level', '=', 'warn')]"/>
+                <filter name="fatal" help="Fatal" domain="[('level', '=', 'fatal')]"/>
+                <filter name="info" help="Info" domain="[('level', '=', 'info')]"/>
+                <filter name="debug" help="Debug" domain="[('level', '=', 'debug')]"/>
+                <field name="name" filter_domain="[('name', 'ilike', self)]"/>
+                <field name="message" filter_domain="[('message', 'ilike', self)]"/>
+                <field name="model" string="Model"/>
+                <field name="user_id" string="User"/>
+                <separator/>
+                <newline/>
+                <group expand="0" name="group_by" string="Group by...">
+                    <filter name="level" help="Level" context="{'group_by': 'level'}"/>
+                    <filter name="user" help="User" context="{'group_by': 'user_id'}" />
+                    <filter name="model" help="Model" context="{'group_by': 'model'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>
