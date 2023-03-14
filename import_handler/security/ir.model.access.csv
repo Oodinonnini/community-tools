@@ -6,4 +6,3 @@ access_import_job_system,access_import_job_system,model_import_job,base.group_sy
 access_import_model,access_import_model,model_import_model,,1,0,0,0
 access_import_model_system,access_import_model_system,model_import_model,base.group_system,1,1,1,1
 access_execute_import, access_execute_import,model_execute_import,base.group_system,1,1,1,1
-access_import_domain_element,access_import_domain_element,import_handler.model_import_domain_element,base.group_system,1,1,1,1

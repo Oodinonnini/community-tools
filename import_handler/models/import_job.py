@@ -55,7 +55,7 @@ class ImportJob(models.Model):
     )
     date_end = fields.Datetime("Date end")
     line_ids = fields.One2many(
-        "import.job.log", "job_id", auto_join=True, string="Lines"
+        "import.job.log", "job_id", auto_join=True, string="Lines", ondelete="cascade"
     )
     state = fields.Selection(LOGGER_STATE, "Status")
     info = fields.Text("Information")
@@ -85,7 +85,7 @@ class ImportJob(models.Model):
     delimiter = fields.Char("Delimiter", compute="_compute_delimiter")
     offset = fields.Integer("Initial Offset")
     limit = fields.Integer("Amount Of Rows To Import", default=0)
-    limit_by_chunk = fields.Integer("Amount of rows to import by chunk", default=1000)
+    limit_by_chunk = fields.Integer("Amount of rows to import by chunk", default=0)
     date_format = fields.Char("Date Format")
     todo_ids = fields.Text("Ids")
     reimport_source_file = fields.Boolean("Reimport source file")
@@ -372,9 +372,7 @@ class ImportJob(models.Model):
             # Execute the import himself
             try:
                 model = job.with_context(importing=True).env[self.import_model]
-                model.with_context(job_id=job).execute_import_chunk(
-                    offset, self.limit_by_chunk, company_id
-                )
+                model.execute_import_chunk(offset, self.limit_by_chunk, company_id, job)
             except Exception as e:
                 # Write the traceback on the job
                 # We need to create an another cursor

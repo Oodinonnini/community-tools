@@ -12,7 +12,7 @@
     "category": "Import",
     "summary": "Handles the import of data from external sources",
     "website": "https://www.niboo.com/",
-    "version": "16.0.1.0.0",
+    "version": "14.0.1.0.0",
     "license": "AGPL-3",
     "description": """
 Import helper that handles with a queue system the import of data from
@@ -21,7 +21,6 @@ external sources.
     "author": "Niboo",
     "depends": ["queue_job"],
     "data": [
-        "data/ir_cron.xml",
         "security/ir.model.access.csv",
         "views/import_job.xml",
         "views/import_model.xml",

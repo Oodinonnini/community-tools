@@ -11,4 +11,3 @@ from . import sql_helper
 from . import import_abstract
 from . import import_job
 from . import import_model
-from . import queue_job

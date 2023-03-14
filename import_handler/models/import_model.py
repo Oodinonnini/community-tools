@@ -32,6 +32,7 @@ class ImportModel(models.Model):
         compute="_compute_file_pattern", inverse="_inverse_set_file_pattern"
     )
     pattern = fields.Char()
+    limit_by_chunk = fields.Integer("Amount of rows to import by chunk", default=1000)
 
     model_id = fields.Many2one(
         "ir.model", domain=[("inherited_model_ids.model", "in", ["import.abstract"])]
@@ -78,11 +79,11 @@ class ImportModel(models.Model):
     def check_folder_path(self):
         def _check_folder_path(path):  # pylint: disable=W0101
             if not os.path.isdir(path):
-                raise exceptions.UserError(
+                raise exceptions.Warning(
                     _("%s is not a correct directory" % path)
                 )  # pylint: disable=W0101
                 if not os.access(path, os.W_OK):
-                    raise exceptions.UserError(
+                    raise exceptions.Warning(
                         _("You cannot write on the folder %s" % path)
                     )
 
@@ -132,6 +133,7 @@ class ImportModel(models.Model):
                     "domain": domain,
                     "offset": offset,
                     "limit": limit,
+                    "limit_by_chunk": import_model.limit_by_chunk,
                     "date_format": date_format,
                     "file_path": file_path,
                     "reimport_source_file": reimport_source_file,
@@ -146,7 +148,7 @@ class ImportModel(models.Model):
                 )
                 job.state = "skip"
                 self._cr.commit()  # pylint: disable=E8102
-                raise exceptions.UserError(_("No file found"))
+                raise exceptions.Warning(_("No file found"))
 
             job.info("Import the file %s" % file_path)
             nbr_of_chunk = job.init_and_get_chunks()
@@ -155,7 +157,7 @@ class ImportModel(models.Model):
                 offset = chunk_iterator * job.limit_by_chunk
                 # Call the method import_chunk for each chunk
                 job.with_delay().import_chunk(offset, chunk_iterator + 1)
-            job.info('End of the import preparation "%s"' % self.name)
+            _logger.info('End of the import preparation "%s"' % self.name)
 
     def button_execute_import(self):
         self.ensure_one()
